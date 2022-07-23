@@ -1,9 +1,9 @@
 import * as express from 'express';
 const router = express.Router();
 
-import { User } from '../models/User';
+import { User } from '../database/models/User';
+import { DB } from '../database/DB';
 
-import { DB } from '../services/DB';
 const db = DB.getInstance();
 db.start();
 
