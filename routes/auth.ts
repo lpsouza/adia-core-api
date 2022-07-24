@@ -71,7 +71,7 @@ router.get('/token', async (req, res) => {
     }
     const user = await User.findOne({ 'token.access': token });
     if (!user) {
-        res.status(400).send('Invalid token');
+        res.status(401).send('Unauthorized');
         return;
     }
 
