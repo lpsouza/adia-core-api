@@ -65,6 +65,13 @@ describe('PUT /apps/:id', () => {
     });
 });
 
+describe('POST /apps/:id/token', () => {
+    it('should set a new token', async () => {
+        const res = await request(app).post(`/apps/${id}/token`).set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(200);
+    });
+});
+
 describe('DELETE /apps/:id', () => {
     it('should return a deleted app', async () => {
         const res = await request(app).delete(`/apps/${id}`).set('Authorization', `Bearer ${token}`);

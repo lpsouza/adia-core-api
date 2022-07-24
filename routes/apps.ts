@@ -2,6 +2,7 @@ import * as express from 'express';
 const router = express.Router();
 
 import { App } from '../database/models/App';
+import { Crypto } from '../services/Crypto';
 
 /**
  * @swagger
@@ -56,6 +57,7 @@ router.get('/:id', async (req: express.Request, res: express.Response) => {
  */
 router.post('/', async (req: express.Request, res: express.Response) => {
     const app = new App(req.body);
+    app.token = await Crypto.generateHash(`${app.name}${new Date().getUTCMilliseconds()}`);
     const created = await app.save();
     if (created) {
         res.status(201).json(created);
@@ -87,6 +89,8 @@ router.put('/:id', async (req: express.Request, res: express.Response) => {
         } else {
             res.status(400).send('No app updated');
         }
+    } else {
+        res.status(400).send('No app found');
     }
 });
 
@@ -107,6 +111,32 @@ router.delete('/:id', async (req: express.Request, res: express.Response) => {
         res.status(200).send('App deleted');
     } else {
         res.status(404).send('No app found');
+    }
+});
+
+/**
+ * @swagger
+ * /apps/:id/token:
+ *  post:
+ *   description: Generate a new app token
+ *   responses:
+ *    '200':
+ *     description: New token generated
+ *    '400':
+ *     description: App not found
+ */
+router.post('/:id/token', async (req: express.Request, res: express.Response) => {
+    const app = await App.findOne({ _id: req.params.id });
+    if (app) {
+        app.token = await Crypto.generateHash(`${app.name}${new Date().getUTCMilliseconds()}`);
+        const updated = await app.save();
+        if (updated) {
+            res.status(200).json(updated);
+        } else {
+            res.status(400).send('No app updated');
+        }
+    } else {
+        res.status(400).send('No app found');
     }
 });
 
