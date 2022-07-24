@@ -1,6 +1,12 @@
 # A.D.I.A Core API
 
-This is the core API of the A.D.I.A. (Automated Digital Intelligence Assistant). The funcionality of this core is the following:
+This is the core API of the A.D.I.A. (Automated Digital Intelligence Assistant).
+
+## A.D.I.A. Architecture
+
+Understand the architecture of the A.D.I.A. [here](https://gist.github.com/lpsouza/a78eee78f2aaac99549a3f10846b7666).
+
+## A.D.I.A. Core API funcionalities
 
 - Manage users and their authentication
 - Manage apps and their authentication
