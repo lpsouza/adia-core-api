@@ -50,12 +50,32 @@ describe('POST /auth/login', () => {
         token.refresh = res.body.refresh;
         token.expireDate = res.body.expireDate;
     });
+    it('should return a error when email is undefined', async () => {
+        const res = await request(app).post('/auth/login').send({ password: user.password });
+        expect(res.status).toBe(400);
+    });
+    it('should return a error when password is undefined', async () => {
+        const res = await request(app).post('/auth/login').send({ email: user.email });
+        expect(res.status).toBe(400);
+    });
 });
 
 describe('GET /auth/token', () => {
     it('should return the token is valid', async () => {
         const res = await request(app).get('/auth/token').set('Authorization', `Bearer ${token.access}`);
         expect(res.status).toBe(200);
+    });
+    it('should return a error when token is invalid', async () => {
+        const res = await request(app).get('/auth/token').set('Authorization', 'Bearer invalid');
+        expect(res.status).toBe(401);
+    });
+    it('should return a error when token is expired', async () => {
+        process.env.ACCESS_TOKEN_LIFE_TIME = "0"
+        const login = { email: 'teste@login.com', password: '123456' };
+        await request(app).post('/auth/register').send(login);
+        const expired = (await request(app).post('/auth/login').send(login)).body.access;
+        const res = await request(app).get('/auth/token').set('Authorization', `Bearer ${expired}`);
+        expect(res.status).toBe(400);
     });
 });
 
@@ -67,5 +87,9 @@ describe('POST /auth/token', () => {
         expect(res.body.access).toBeDefined();
         expect(res.body.refresh).toBeDefined();
         expect(res.body.expireDate).toBeDefined();
+    });
+    it('should return a error when refresh token is undefined', async () => {
+        const res = await request(app).post('/auth/token').send({});
+        expect(res.status).toBe(400);
     });
 });
