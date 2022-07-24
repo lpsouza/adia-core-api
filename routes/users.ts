@@ -1,11 +1,9 @@
 import * as express from 'express';
 const router = express.Router();
 
-import { User } from '../database/models/User';
-import { DB } from '../database/DB';
+import { Crypto } from '../services/Crypto';
 
-const db = DB.getInstance();
-db.start();
+import { User } from '../database/models/User';
 
 /**
  * @swagger
@@ -14,12 +12,14 @@ db.start();
  *   description: Get all users
  *   responses:
  *    '200':
- *     description: A successful response
+ *     description: A list of users found
+ *    '404':
+ *     description: No one users found
  */
 router.get('/', async (req: express.Request, res: express.Response) => {
     const users = await User.find();
     if (users) {
-        res.json(users);
+        res.status(200).json(users);
     } else {
         res.status(404).send('No users found');
     }
@@ -32,12 +32,14 @@ router.get('/', async (req: express.Request, res: express.Response) => {
  *   description: Get a user by id
  *   responses:
  *    '200':
- *     description: A successful response
+ *     description: User found
+ *    '404':
+ *     description: User not found
  */
 router.get('/:email', async (req: express.Request, res: express.Response) => {
     const users = await User.findOne({ email: req.params.email });
     if (users) {
-        res.json(users);
+        res.status(200).json(users);
     } else {
         res.status(404).send('No user found');
     }
@@ -50,10 +52,13 @@ router.get('/:email', async (req: express.Request, res: express.Response) => {
  *   description: Create a new user
  *   responses:
  *    '201':
- *     description: A successful response
+ *     description: New user created
+ *    '400':
+ *     description: Bad request
  */
 router.post('/', async (req: express.Request, res: express.Response) => {
     const user = new User(req.body);
+    user.password = await Crypto.generateHash(user.password);
     const created = await user.save();
     if (created) {
         res.status(201).json(user);
@@ -70,16 +75,20 @@ router.post('/', async (req: express.Request, res: express.Response) => {
  *   description: Update a user
  *   responses:
  *    '200':
- *      description: A successful response
+ *     description: User updated successfully
+ *    '400':
+ *     description: Bad request
  */
 router.put('/:email', async (req: express.Request, res: express.Response) => {
     const user = await User.findOne({ email: req.params.email });
     if (user) {
-        user.email = req.body.email;
-        user.role = req.body.role;
+        user.password = req.body.password ? await Crypto.generateHash(req.body.password) : user.password;
+        user.role = req.body.role ? req.body.role : user.role;
+        user.telegram = req.body.telegram ? req.body.telegram : user.telegram;
+        user.token = req.body.token ? req.body.token : user.token;
         const updated = await user.save();
         if (updated) {
-            res.json(user);
+            res.status(200).json(user);
         } else {
             res.status(400).send('Bad request');
         }
@@ -88,6 +97,17 @@ router.put('/:email', async (req: express.Request, res: express.Response) => {
     }
 });
 
+/**
+ * @swagger
+ * /users/:email:
+ *  delete:
+ *   description: Delete a user
+ *   responses:
+ *    '200':
+ *     description: User is successfully deleted
+ *    '404':
+ *     description: User not found
+ */
 router.delete('/:email', async (req: express.Request, res: express.Response) => {
     const user = await User.findOne({ email: req.params.email });
     if (user) {

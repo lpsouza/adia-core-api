@@ -3,8 +3,8 @@ import { ITokenInfo } from "./ITokenInfo";
 
 export interface IUser {
     email: string;
-    password?: string;
     role: string;
+    password?: string;
     name?: string;
     telegram?: ITelegramInfo;
     token?: ITokenInfo;
