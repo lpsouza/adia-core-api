@@ -3,7 +3,7 @@ import { App } from '../database/models/App';
 
 import { TokenManager } from '../services/TokenManager';
 
-export const AuthMiddleware = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+export const Authentication = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
         const appToken = req.headers['x-app-token'];
