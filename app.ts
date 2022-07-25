@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { DB } from './database/DB';
-import { AuthMiddleware } from './middleware/auth';
+import { Authentication } from './middleware/Authentication';
 
 import routerIndex from './routes/index';
 import routerDocs from './routes/docs';
@@ -16,7 +16,7 @@ app.use(express.json());
 app.use('/', routerIndex);
 app.use('/docs', routerDocs);
 app.use('/auth', routerAuth);
-app.use('/users', AuthMiddleware, routerUsers);
-app.use('/apps', AuthMiddleware, routerApps);
+app.use('/users', Authentication, routerUsers);
+app.use('/apps', Authentication, routerApps);
 
 export default app;
