@@ -1,5 +1,6 @@
 import * as express from 'express';
 import { App } from '../database/models/App';
+import { User } from '../database/models/User';
 
 import { TokenManager } from '../services/TokenManager';
 
@@ -16,6 +17,7 @@ export const Authentication = async (req: express.Request, res: express.Response
                 res.status(401).send('Unauthorized');
                 return;
             } else {
+                res.locals.app = app;
                 next();
                 return;
             }
@@ -23,7 +25,9 @@ export const Authentication = async (req: express.Request, res: express.Response
     }
 
     try {
-        TokenManager.verify(token);
+        const tokenInfo = TokenManager.verify(token);
+        const user = await User.findOne({ email: tokenInfo.email });
+        res.locals.user = user;
     } catch (error) {
         res.status(401).send("Unauthorized");
         return;
