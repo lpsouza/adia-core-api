@@ -3,8 +3,7 @@ import app from '../../app';
 
 import { Crypto } from '../../services/Crypto';
 
-import { IUser } from '../../database/interfaces/IUser';
-const user: IUser = {
+const user = {
     email: 'johndoe@fakemail.com',
     password: '123456',
     role: 'owner'
