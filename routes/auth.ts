@@ -2,13 +2,13 @@ import * as express from 'express';
 import { ITokenInfo } from '../database/interfaces/ITokenInfo';
 const router = express.Router();
 
-import { IUser } from '../database/interfaces/IUser';
-import { User } from '../database/models/User';
 import { Crypto } from '../services/Crypto';
 import { TokenManager } from '../services/TokenManager';
 
+import { User } from '../database/models/User';
+
 router.post('/register', async (req, res) => {
-    const user: IUser = req.body;
+    const user = new User(req.body);
 
     if (!user.email || !user.password) {
         res.status(400).send('Invalid user data');
@@ -22,10 +22,9 @@ router.post('/register', async (req, res) => {
         return;
     }
 
-    const newUser = new User(user);
-    newUser.password = await Crypto.generateHash(user.password);
-    newUser.role = (await User.find()).length === 0 ? 'owner' : 'none';
-    await newUser.save();
+    user.password = await Crypto.generateHash(user.password);
+    user.role = (await User.find()).length === 0 ? 'owner' : 'none';
+    await user.save();
 
     res.status(201).send('User created');
 });
