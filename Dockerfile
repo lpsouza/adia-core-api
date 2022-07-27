@@ -8,7 +8,9 @@ RUN npm run build
 FROM node:16.13
 ENV NODE_ENV=production
 WORKDIR /usr/src/app
-COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "server.cert", "server.key", "./"]
+COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
 RUN npm install --production --silent && mv node_modules ../
 COPY --from=build /usr/src/app/dist/ .
+COPY --from=build /usr/src/app/server.key .
+COPY --from=build /usr/src/app/server.cert .
 CMD ["npm", "start"]
