@@ -131,3 +131,7 @@ dist
 
 # REST tests
 /tests/rest/
+
+# Ignore certificates
+*.cert
+*.key
