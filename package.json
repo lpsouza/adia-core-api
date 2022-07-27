@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "start": "node ./server.js",
-        "build": "openssl req -new -newkey rsa:4096 -days 365 -nodes -x509  -subj \"/O=ADIA/CN=localhost\" -keyout server.key -out server.cert && tsc --build --verbose",
+        "build": "tsc --build --verbose",
         "clean": "rm -Rf dist/",
         "test": "NODE_ENV=test jest --detectOpenHandles --forceExit",
         "dev": "npm run build && node -r dotenv/config ./dist/server.js"
