@@ -1,4 +1,5 @@
 import * as express from 'express';
+import * as cors from 'cors';
 import { DB } from './database/DB';
 
 import { Authentication } from './middleware/Authentication';
@@ -15,6 +16,11 @@ const app: express.Application = express();
 
 db.start();
 app.use(express.json());
+
+if (process.env.NODE_ENV === 'development') {
+    app.use(cors());
+}
+
 app.use('/', routerIndex);
 app.use('/docs', routerDocs);
 app.use('/auth', routerAuth);
