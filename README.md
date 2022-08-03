@@ -24,7 +24,7 @@ Understand the architecture of the A.D.I.A. [here](https://gist.github.com/lpsou
 Start the API and configure the environment variables.
 
 ```bash
-docker run -p 3000:3000 -e CONNECTION_STRING=mongodb://localhost:27017/adia -e CRYPTO_KEY=secret -e TOKEN_KEY=secret -e ACCESS_TOKEN_LIFE_TIME=3600 -e REFRESH_TOKEN_LIFE_TIME=86400 --name adia-core-api -d lpsouza/adia-core-api
+docker run -p 3000:3000 -e CONNECTION_STRING=<MONGODB-CONNECTION-STRING> -e CRYPTO_KEY=secret -e TOKEN_KEY=secret -e ACCESS_TOKEN_LIFE_TIME=3600 -e REFRESH_TOKEN_LIFE_TIME=86400 --name adia-core-api -d lpsouza/adia-core-api
 ```
 
 If you need run the API without connecting to the database, this API will instance a MongoDB database in memory. Use this method to tests or demonstrations.
