@@ -51,9 +51,14 @@ router.post('/login', async (req, res) => {
         res.status(400).send('Invalid password');
         return;
     } else {
+        const tokenInfo = {
+            email: userInDB.email,
+            role: userInDB.role,
+            name: userInDB.name
+        };
         token = {
-            access: TokenManager.generate({ email: userInDB.email }, parseInt(process.env.ACCESS_TOKEN_LIFE_TIME)),
-            refresh: TokenManager.generate({ email: userInDB.email }, parseInt(process.env.REFRESH_TOKEN_LIFE_TIME)),
+            access: TokenManager.generate(tokenInfo, parseInt(process.env.ACCESS_TOKEN_LIFE_TIME)),
+            refresh: TokenManager.generate(tokenInfo, parseInt(process.env.REFRESH_TOKEN_LIFE_TIME)),
             expireDate: new Date(Date.now() + parseInt(process.env.ACCESS_TOKEN_LIFE_TIME) * 1000)
         }
         userInDB.token = token;
@@ -74,8 +79,9 @@ router.get('/token', async (req, res) => {
         return;
     }
 
+    let info: any;
     try {
-        TokenManager.verify(token);
+        info = TokenManager.verify(token);
     } catch (error) {
         switch (error.message) {
             case "jwt expired":
@@ -89,7 +95,7 @@ router.get('/token', async (req, res) => {
         return;
     }
 
-    res.status(200).send('Token valid');
+    res.status(200).send(info);
 });
 
 router.post('/token', async (req, res) => {
