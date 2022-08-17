@@ -4,6 +4,7 @@ import app from '../../app';
 import { Crypto } from '../../services/Crypto';
 
 const user = {
+    name: 'John Doe',
     email: 'johndoe@fakemail.com',
     password: '123456',
     role: 'owner'
@@ -27,6 +28,7 @@ describe('POST /users', () => {
     it('should return a created user', async () => {
         const res = await request(app).post('/users').send(user).set('Authorization', `Bearer ${token}`);
         expect(res.status).toBe(201);
+        expect(res.body.name).toBe(user.name);
         expect(res.body.email).toEqual(user.email);
         expect(await Crypto.compareHash(`${user.password}`, res.body.password)).toBe(true);
         expect(res.body.role).toEqual(user.role);
@@ -45,6 +47,7 @@ describe('GET /users/:email', () => {
     it('should return a user', async () => {
         const res = await request(app).get(`/users/${user.email}`).set('Authorization', `Bearer ${token}`);
         expect(res.status).toBe(200);
+        expect(res.body.name).toBe(user.name);
         expect(res.body.email).toEqual(user.email);
         expect(await Crypto.compareHash(`${user.password}`, res.body.password)).toBe(true);
         expect(res.body.role).toEqual(user.role);
@@ -53,9 +56,11 @@ describe('GET /users/:email', () => {
 
 describe('PUT /users/:email', () => {
     it('should return a user', async () => {
+        user.name = 'John Doe 2';
         user.role = 'none';
         const res = await request(app).put(`/users/${user.email}`).send(user).set('Authorization', `Bearer ${token}`);
         expect(res.status).toBe(200);
+        expect(res.body.name).toBe(user.name);
         expect(res.body.email).toEqual(user.email);
         expect(await Crypto.compareHash(`${user.password}`, res.body.password)).toBe(true);
         expect(res.body.role).toEqual(user.role);

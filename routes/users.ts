@@ -83,6 +83,7 @@ router.post('/', async (req: express.Request, res: express.Response) => {
 router.put('/:email', async (req: express.Request, res: express.Response) => {
     const user = await User.findOne({ email: req.params.email });
     if (user) {
+        user.name = req.body.name;
         user.password = req.body.password ? await Crypto.generateHash(req.body.password) : user.password;
         user.role = req.body.role ? req.body.role : user.role;
         user.telegram = req.body.telegram ? req.body.telegram : user.telegram;
