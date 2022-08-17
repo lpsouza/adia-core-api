@@ -59,6 +59,7 @@ router.get('/:email', async (req: express.Request, res: express.Response) => {
 router.post('/', async (req: express.Request, res: express.Response) => {
     const user = new User(req.body);
     user.password = await Crypto.generateHash(user.password);
+    user.role = user.role !== undefined ? user.role : 'none';
     const created = await user.save();
     if (created) {
         res.status(201).json(user);
