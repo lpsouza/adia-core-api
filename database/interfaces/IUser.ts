@@ -1,4 +1,3 @@
-import { ITelegramInfo } from "./ITelegramInfo";
 import { ITokenInfo } from "./ITokenInfo";
 
 export interface IUser {
@@ -6,6 +5,5 @@ export interface IUser {
     role: string;
     password?: string;
     name?: string;
-    telegram?: ITelegramInfo;
     token?: ITokenInfo;
 }

@@ -86,7 +86,6 @@ router.put('/:email', async (req: express.Request, res: express.Response) => {
         user.name = req.body.name;
         user.password = req.body.password ? await Crypto.generateHash(req.body.password) : user.password;
         user.role = req.body.role ? req.body.role : user.role;
-        user.telegram = req.body.telegram ? req.body.telegram : user.telegram;
         user.token = req.body.token ? req.body.token : user.token;
         const updated = await user.save();
         if (updated) {
