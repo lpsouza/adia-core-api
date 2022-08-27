@@ -7,20 +7,23 @@ import { TokenManager } from '../services/TokenManager';
 export const Authentication = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
-        const appToken = req.headers['x-app-token'];
-        if (!appToken) {
+        const appId = req.headers['X-App-Id'] as string;
+        const appToken = req.headers['X-App-Token'] as string;
+        if (!appId || !appToken) {
             res.status(401).send('Unauthorized');
             return;
-        } else {
-            const app = await App.findOne({ token: appToken });
-            if (!app) {
-                res.status(401).send('Unauthorized');
-                return;
-            } else {
-                res.locals.app = app;
-                next();
-                return;
-            }
+        }
+
+        const app = await App.findOne({ token: appToken });
+        if (!app) {
+            res.status(401).send('Unauthorized');
+            return;
+        }
+
+        if (app.token === appToken) {
+            res.locals.app = app;
+            next();
+            return;
         }
     }
 
