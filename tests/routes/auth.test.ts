@@ -79,6 +79,24 @@ describe('GET /auth/token', () => {
     });
 });
 
+describe('GET /auth/token/:token', () => {
+    it('should return the token information', async () => {
+        const res = await request(app).get(`/auth/token/${token.access}`).set('Authorization', `Bearer ${token.access}`);
+        expect(res.body.name).toBeUndefined();
+        expect(res.body.email).toEqual(user.email);
+        expect(res.body.role).toEqual("owner");
+        expect(res.status).toBe(200);
+    });
+    it('should return a error when token param is invalid', async () => {
+        const res = await request(app).get(`/auth/token/invalid`).set('Authorization', `Bearer ${token.access}`);
+        expect(res.status).toBe(404);
+    });
+    it('should return a error when user token is invalid', async () => {
+        const res = await request(app).get(`/auth/token/${token.access}`).set('Authorization', 'Bearer invalid');
+        expect(res.status).toBe(401);
+    });
+});
+
 describe('POST /auth/token', () => {
     it('should return a new token', async () => {
         const refresh = { refreshToken: token.refresh };

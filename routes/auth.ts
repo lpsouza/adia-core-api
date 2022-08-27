@@ -7,6 +7,9 @@ import { TokenManager } from '../services/TokenManager';
 
 import { User } from '../database/models/User';
 
+import { Authentication } from '../middleware/Authentication';
+import { Authorization } from '../middleware/Authorization';
+
 router.post('/register', async (req, res) => {
     const user = new User(req.body);
 
@@ -76,6 +79,34 @@ router.get('/token', async (req, res) => {
     const user = await User.findOne({ 'token.access': token });
     if (!user) {
         res.status(401).send('Unauthorized');
+        return;
+    }
+
+    let info: any;
+    try {
+        info = TokenManager.verify(token);
+    } catch (error) {
+        switch (error.message) {
+            case "jwt expired":
+                res.status(400).send('Token expired');
+                break;
+
+            default:
+                res.status(400).send(error.message);
+                break;
+        }
+        return;
+    }
+
+    res.status(200).send(info);
+});
+
+router.get('/token/:token', Authentication, Authorization, async (req, res) => {
+    const token = req.params.token;
+
+    const user = await User.findOne({ 'token.access': token });
+    if (!user) {
+        res.status(404).send('Not found');
         return;
     }
 
