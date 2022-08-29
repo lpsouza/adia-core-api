@@ -7,8 +7,8 @@ import { TokenManager } from '../services/TokenManager';
 export const Authentication = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
-        const appId = req.headers['X-App-Id'] as string;
-        const appToken = req.headers['X-App-Token'] as string;
+        const appId = req.headers['x-app-id'] as string;
+        const appToken = req.headers['x-app-token'] as string;
         if (!appId || !appToken) {
             res.status(401).send('Unauthorized');
             return;

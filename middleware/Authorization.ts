@@ -6,11 +6,14 @@ export const Authorization = async (req: express.Request, res: express.Response,
     if (user) {
         if (user.role === 'owner') {
             next();
-        } else {
-            res.status(403).send('Forbidden');
             return;
         }
-    } else if (app) {
+        res.status(403).send('Forbidden');
+        return;
+    }
+
+    if (app) {
         next();
+        return;
     }
 }
