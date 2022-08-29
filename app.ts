@@ -1,4 +1,5 @@
 import * as express from 'express';
+import * as morgan from 'morgan';
 import * as cors from 'cors';
 import { DB } from './database/DB';
 
@@ -16,6 +17,7 @@ const app: express.Application = express();
 
 db.start();
 app.use(express.json());
+app.use(morgan('combined'));
 
 if (process.env.NODE_ENV === 'development') {
     app.use(cors());
