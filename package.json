@@ -14,7 +14,7 @@
         "@hugoalh/symmetric-crypto": "^1.4.0",
         "bcryptjs": "^2.4.3",
         "cors": "^2.8.5",
-        "express": "~4.16.1",
+        "express": "~4.18.2",
         "jsonwebtoken": "^8.5.1",
         "mongodb-memory-server": "^8.7.2",
         "mongoose": "^6.4.6",
